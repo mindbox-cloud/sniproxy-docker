@@ -43,7 +43,6 @@ jobs:
           file: ./Dockerfile
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.version }}
-            ${{ matrix.latest && format('{0}/{1}:latest', env.REGISTRY, env.IMAGE_NAME) }}
           build-args: |
             SNIPROXY_VER=v${{ matrix.version }}
           platforms: |
