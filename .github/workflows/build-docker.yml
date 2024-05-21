@@ -13,6 +13,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        include:
+          - { version: '1.6.1', latest: true }
+          - { version: '1.6', latest: false }
+          - { version: '1.5.1', latest: false }
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -31,7 +38,9 @@ jobs:
         id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.version }}
+          tags: |
+            type=raw,value=latest,enable=${{ matrix.latest }}
 
       - name: Build and push
         id: docker_build
@@ -42,3 +51,5 @@ jobs:
           file: ./Dockerfile
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            SNIPROXY_VER=v${{ matrix.version }}

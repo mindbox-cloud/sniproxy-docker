@@ -1,7 +1,10 @@
 FROM golang:1.22-bookworm as build
 
+ARG SNIPROXY_VER
+
 WORKDIR /app
 RUN git clone https://github.com/ameshkov/sniproxy.git . \
+    && git checkout tags/${SNIPROXY_VER} \
     && go mod tidy \
     && go build -o sniproxy
 
