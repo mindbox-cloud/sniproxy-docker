@@ -30,7 +30,7 @@ jobs:
       - name: Login to GHCR
         uses: docker/login-action@v1
         with:
-          registry: ghcr.io
+          registry: ${{ env.REGISTRY }}
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
@@ -41,8 +41,7 @@ jobs:
           push: true
           context: .
           file: ./Dockerfile
-          tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.version }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.version }} ${{ matrix.latest && format(', {0}/{1}:latest', env.REGISTRY, env.IMAGE_NAME) }}
           build-args: |
             SNIPROXY_VER=v${{ matrix.version }}
           platforms: |
